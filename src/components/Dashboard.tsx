@@ -189,9 +189,9 @@ export const Dashboard: React.FC = () => {
         <div className="min-h-screen bg-slate-50 font-sans text-slate-900">
             {/* Navbar / Header */}
             <div className="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
-                    <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-200">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div className="flex items-center space-x-3 w-full md:w-auto justify-center md:justify-start">
+                        <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-200 shrink-0">
                             <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                         </div>
                         <div>
@@ -200,71 +200,74 @@ export const Dashboard: React.FC = () => {
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex flex-wrap justify-center md:justify-end items-center gap-3 w-full md:w-auto">
                         {/* Admin Button */}
                         <button
                             onClick={() => setIsTeamModalOpen(true)}
-                            className="bg-white hover:bg-slate-50 text-slate-600 border border-slate-200 px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors flex items-center gap-2 shadow-sm"
+                            className="bg-white hover:bg-slate-50 text-slate-600 border border-slate-200 px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors flex items-center gap-2 shadow-sm order-3 md:order-1"
                         >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
-                            Team
+                            <span className="hidden sm:inline">Team</span>
                         </button>
 
                         {/* View Toggle */}
-                        <div className="bg-slate-100 p-1 rounded-lg flex text-sm font-medium">
+                        <div className="bg-slate-100 p-1 rounded-lg flex text-sm font-medium order-1 md:order-2 overflow-x-auto max-w-full">
                             <button
                                 onClick={() => setViewMode('day')}
-                                className={`px-3 py-1.5 rounded-md transition-all ${viewMode === 'day' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                                className={`px-3 py-1.5 rounded-md transition-all whitespace-nowrap ${viewMode === 'day' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                             >
                                 Dag
                             </button>
                             <button
                                 onClick={() => setViewMode('weeks')}
-                                className={`px-3 py-1.5 rounded-md transition-all ${viewMode === 'weeks' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                                className={`px-3 py-1.5 rounded-md transition-all whitespace-nowrap ${viewMode === 'weeks' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                             >
                                 Weken
                             </button>
                             <button
                                 onClick={() => setViewMode('month')}
-                                className={`px-3 py-1.5 rounded-md transition-all ${viewMode === 'month' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                                className={`px-3 py-1.5 rounded-md transition-all whitespace-nowrap ${viewMode === 'month' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                             >
                                 Maand
                             </button>
                         </div>
 
                         {/* Date/Month/Week Picker */}
-                        <div className="flex items-center bg-white border border-slate-300 rounded-lg p-1 shadow-sm focus-within:ring-2 focus-within:ring-indigo-100">
+                        <div className="flex items-center bg-white border border-slate-300 rounded-lg p-1 shadow-sm focus-within:ring-2 focus-within:ring-indigo-100 order-2 md:order-3">
                             {viewMode === 'day' ? (
                                 <input
                                     type="date"
                                     value={date}
                                     onChange={(e) => setDate(e.target.value)}
-                                    className="outline-none text-slate-700 font-medium bg-transparent px-2"
+                                    className="outline-none text-slate-700 font-medium bg-transparent px-2 w-32 sm:w-auto"
                                 />
                             ) : viewMode === 'month' ? (
                                 <input
                                     type="month"
                                     value={month}
                                     onChange={(e) => setMonth(e.target.value)}
-                                    className="outline-none text-slate-700 font-medium bg-transparent px-2"
+                                    className="outline-none text-slate-700 font-medium bg-transparent px-2 w-32 sm:w-auto"
                                 />
                             ) : (
-                                <div className="flex items-center space-x-2 px-2">
-                                    <span className="text-xs font-semibold text-slate-400 uppercase">Weken:</span>
-                                    <input
-                                        type="number"
-                                        min="1"
-                                        max="12"
+                                <div className="flex items-center px-2 gap-2">
+                                    <span className="text-slate-400 text-sm font-medium">Coming:</span>
+                                    <select
                                         value={weeks}
-                                        onChange={(e) => setWeeks(parseInt(e.target.value) || 1)}
-                                        className="outline-none text-slate-700 font-medium bg-transparent w-12 text-center"
-                                    />
+                                        onChange={(e) => setWeeks(Number(e.target.value))}
+                                        className="outline-none text-indigo-600 font-bold bg-transparent cursor-pointer"
+                                    >
+                                        <option value="1">1 Week</option>
+                                        <option value="2">2 Weeks</option>
+                                        <option value="4">4 Weeks</option>
+                                        <option value="8">8 Weeks</option>
+                                    </select>
                                 </div>
                             )}
                         </div>
                     </div>
                 </div>
             </div>
+
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
@@ -399,15 +402,17 @@ export const Dashboard: React.FC = () => {
             </DetailsModal>
 
             {/* Settings Modal */}
-            {settingsAgent && (
-                <AgentSettingsModal
-                    isOpen={!!settingsAgentId}
-                    onClose={closeSettings}
-                    salesRep={settingsAgent}
-                    schedule={settingsAgent.schedule || DEFAULT_SCHEDULE}
-                    onSave={handleSaveSettings}
-                />
-            )}
+            {
+                settingsAgent && (
+                    <AgentSettingsModal
+                        isOpen={!!settingsAgentId}
+                        onClose={closeSettings}
+                        salesRep={settingsAgent}
+                        schedule={settingsAgent.schedule || DEFAULT_SCHEDULE}
+                        onSave={handleSaveSettings}
+                    />
+                )
+            }
 
             <TeamManagementModal
                 isOpen={isTeamModalOpen}
@@ -415,6 +420,6 @@ export const Dashboard: React.FC = () => {
                 salesReps={salesReps}
                 onUpdate={loadReps}
             />
-        </div>
+        </div >
     );
 };

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { OccupancyCard } from './OccupancyCard';
 import { DetailsModal } from './DetailsModal';
 import { AgentSettingsModal } from './AgentSettingsModal';
-import { DEFAULT_SCHEDULE } from '../config/telecalendar';
+import { SALES_REPS, DEFAULT_SCHEDULE } from '../config/telecalendar';
 import type { SalesRep, Schedule } from '../config/telecalendar';
 import { TeleCalendarService } from '../services/telecalendar';
 import type { TimeRange } from '../services/telecalendar';
@@ -22,7 +22,7 @@ export const Dashboard: React.FC = () => {
     const [weeks, setWeeks] = useState<number>(4);
 
     // Data State
-    const [salesReps, setSalesReps] = useState<SalesRep[]>([]);
+    const [salesReps, setSalesReps] = useState<SalesRep[]>(SALES_REPS);
     const [agentData, setAgentData] = useState<Record<string, AgentData & { availableSlots?: number }>>({});
     const [loading, setLoading] = useState<boolean>(true);
 

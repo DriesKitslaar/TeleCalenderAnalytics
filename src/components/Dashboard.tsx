@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { OccupancyCard } from './OccupancyCard';
 import { DetailsModal } from './DetailsModal';
 import { AgentSettingsModal } from './AgentSettingsModal';
+import { TeamManagementModal } from './TeamManagementModal';
 import { SALES_REPS, DEFAULT_SCHEDULE } from '../config/telecalendar';
 import type { SalesRep, Schedule } from '../config/telecalendar';
 import { TeleCalendarService } from '../services/telecalendar';
@@ -20,6 +21,7 @@ export const Dashboard: React.FC = () => {
     const [date, setDate] = useState<string>(new Date().toISOString().split('T')[0]);
     const [month, setMonth] = useState<string>(new Date().toISOString().slice(0, 7)); // YYYY-MM
     const [weeks, setWeeks] = useState<number>(4);
+    const [isTeamModalOpen, setIsTeamModalOpen] = useState(false);
 
     // Data State
     const [salesReps, setSalesReps] = useState<SalesRep[]>(SALES_REPS);
@@ -30,17 +32,17 @@ export const Dashboard: React.FC = () => {
     const [selectedAgentId, setSelectedAgentId] = useState<string | null>(null);
     const [settingsAgentId, setSettingsAgentId] = useState<string | null>(null);
 
+    const loadReps = async () => {
+        const reps = await SupabaseService.getSalesReps();
+        if (reps.length > 0) {
+            setSalesReps(reps);
+        } else {
+            console.warn("No reps found in DB, or connection failed. Using defaults.");
+        }
+    };
+
     // Load Reps from DB
     useEffect(() => {
-        const loadReps = async () => {
-            const reps = await SupabaseService.getSalesReps();
-            if (reps.length > 0) {
-                setSalesReps(reps);
-            } else {
-                // Fallback or empty state handling if needed
-                console.warn("No reps found in DB, or connection failed.");
-            }
-        };
         loadReps();
     }, []);
 
@@ -199,6 +201,15 @@ export const Dashboard: React.FC = () => {
                     </div>
 
                     <div className="flex items-center gap-4">
+                        {/* Admin Button */}
+                        <button
+                            onClick={() => setIsTeamModalOpen(true)}
+                            className="bg-white hover:bg-slate-50 text-slate-600 border border-slate-200 px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors flex items-center gap-2 shadow-sm"
+                        >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                            Team
+                        </button>
+
                         {/* View Toggle */}
                         <div className="bg-slate-100 p-1 rounded-lg flex text-sm font-medium">
                             <button
@@ -397,6 +408,13 @@ export const Dashboard: React.FC = () => {
                     onSave={handleSaveSettings}
                 />
             )}
+
+            <TeamManagementModal
+                isOpen={isTeamModalOpen}
+                onClose={() => setIsTeamModalOpen(false)}
+                salesReps={salesReps}
+                onUpdate={loadReps}
+            />
         </div>
     );
 };

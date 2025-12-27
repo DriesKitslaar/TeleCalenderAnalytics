@@ -57,5 +57,71 @@ export const SupabaseService = {
             return false;
         }
         return true;
+    },
+
+    /**
+     * Add a new sales rep.
+     */
+    async addSalesRep(rep: SalesRep): Promise<boolean> {
+        const client = supabase;
+        if (!client) return false;
+
+        const { error } = await client
+            .from('sales_reps')
+            .insert({
+                id: rep.id,
+                name: rep.name,
+                event_type_id: rep.eventTypeId,
+                tag: rep.tag,
+                schedule: rep.schedule // Defaults should be handled by caller or DB default
+            });
+
+        if (error) {
+            console.error('Error adding sales rep:', error);
+            return false;
+        }
+        return true;
+    },
+
+    /**
+     * Update sales rep basic details (Name, ID, Tag).
+     */
+    async updateSalesRepDetails(rep: SalesRep): Promise<boolean> {
+        const client = supabase;
+        if (!client) return false;
+
+        const { error } = await client
+            .from('sales_reps')
+            .update({
+                name: rep.name,
+                event_type_id: rep.eventTypeId,
+                tag: rep.tag
+            })
+            .eq('id', rep.id);
+
+        if (error) {
+            console.error('Error updating sales rep details:', error);
+            return false;
+        }
+        return true;
+    },
+
+    /**
+     * Delete a sales rep.
+     */
+    async deleteSalesRep(id: string): Promise<boolean> {
+        const client = supabase;
+        if (!client) return false;
+
+        const { error } = await client
+            .from('sales_reps')
+            .delete()
+            .eq('id', id);
+
+        if (error) {
+            console.error('Error deleting sales rep:', error);
+            return false;
+        }
+        return true;
     }
 };

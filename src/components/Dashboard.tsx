@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { OccupancyCard } from './OccupancyCard';
 import { DetailsModal } from './DetailsModal';
 import { AgentSettingsModal } from './AgentSettingsModal';
-import { SALES_REPS, DEFAULT_SCHEDULE } from '../config/telecalendar';
+import { DEFAULT_SCHEDULE } from '../config/telecalendar';
 import type { SalesRep, Schedule } from '../config/telecalendar';
 import { TeleCalendarService } from '../services/telecalendar';
 import type { TimeRange } from '../services/telecalendar';
+import { SupabaseService } from '../services/supabase';
 
 interface AgentData {
     id: string;
@@ -21,13 +22,27 @@ export const Dashboard: React.FC = () => {
     const [weeks, setWeeks] = useState<number>(4);
 
     // Data State
-    const [salesReps, setSalesReps] = useState<SalesRep[]>(SALES_REPS);
+    const [salesReps, setSalesReps] = useState<SalesRep[]>([]);
     const [agentData, setAgentData] = useState<Record<string, AgentData & { availableSlots?: number }>>({});
     const [loading, setLoading] = useState<boolean>(true);
 
     // Modal State
     const [selectedAgentId, setSelectedAgentId] = useState<string | null>(null);
     const [settingsAgentId, setSettingsAgentId] = useState<string | null>(null);
+
+    // Load Reps from DB
+    useEffect(() => {
+        const loadReps = async () => {
+            const reps = await SupabaseService.getSalesReps();
+            if (reps.length > 0) {
+                setSalesReps(reps);
+            } else {
+                // Fallback or empty state handling if needed
+                console.warn("No reps found in DB, or connection failed.");
+            }
+        };
+        loadReps();
+    }, []);
 
     // Derived stats
     const totalReps = salesReps.length;
@@ -158,10 +173,14 @@ export const Dashboard: React.FC = () => {
 
     const settingsAgent = settingsAgentId ? salesReps.find(r => r.id === settingsAgentId) : null;
 
-    const handleSaveSettings = (id: string, newSchedule: Schedule) => {
+    const handleSaveSettings = async (id: string, newSchedule: Schedule) => {
+        // Optimistic update
         setSalesReps(prev => prev.map(rep =>
             rep.id === id ? { ...rep, schedule: newSchedule } : rep
         ));
+
+        // Persist to DB
+        await SupabaseService.updateSchedule(id, newSchedule);
     };
 
     return (
